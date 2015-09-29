@@ -135,12 +135,15 @@ func (s *darwinLaunchdService) Install() error {
 
 		KeepAlive, RunAtLoad bool
 		SessionCreate        bool
+		LogStderr, LogStdout bool
 	}{
 		Config:        s.Config,
 		Path:          path,
 		KeepAlive:     s.Option.bool(optionKeepAlive, optionKeepAliveDefault),
 		RunAtLoad:     s.Option.bool(optionRunAtLoad, optionRunAtLoadDefault),
 		SessionCreate: s.Option.bool(optionSessionCreate, optionSessionCreateDefault),
+		LogStderr:     s.Option.bool(optionLogStderr, optionLogStderrDefault),
+		LogStdout:     s.Option.bool(optionLogStdout, optionLogStdoutDefault),
 	}
 
 	functions := template.FuncMap{
@@ -235,6 +238,15 @@ var launchdConfig = `<?xml version='1.0' encoding='UTF-8'?>
 <key>KeepAlive</key><{{bool .KeepAlive}}/>
 <key>RunAtLoad</key><{{bool .RunAtLoad}}/>
 <key>Disabled</key><false/>
+{{if .LogStderr}}
+<key>StandardErrorPath</key>
+<string>/Library/Logs/{{html .Name}}.log</string>
+{{end}}
+{{if .LogStdout}}
+<key>StandardOutPath</key>
+<string>/Library/Logs/{{html .Name}}.log</string>
+{{end}}
+
 </dict>
 </plist>
 `

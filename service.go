@@ -75,10 +75,13 @@ const (
 	optionUserServiceDefault   = false
 	optionSessionCreate        = "SessionCreate"
 	optionSessionCreateDefault = false
-
-	optionRunWait      = "RunWait"
-	optionReloadSignal = "ReloadSignal"
-	optionPIDFile      = "PIDFile"
+	optionRunWait              = "RunWait"
+	optionReloadSignal         = "ReloadSignal"
+	optionPIDFile              = "PIDFile"
+	optionLogStderr            = "LogStderr"
+	optionLogStderrDefault     = false
+	optionLogStdout            = "LogStdout"
+	optionLogStdoutDefault     = false
 )
 
 // Config provides the setup for a Service. The Name field is required.
@@ -107,6 +110,8 @@ type Config struct {
 	//    - RunAtLoad     bool (false)
 	//    - UserService   bool (false) - Install as a current user service.
 	//    - SessionCreate bool (false) - Create a full user session.
+	//    - LogStderr			bool (false) - Log the processes stderr
+	//    - LogStdout			bool (false) - Log the processes stdout
 	//  * POSIX
 	//    - RunWait      func() (wait for SIGNAL) - Do not install signal but wait for this function to return.
 	//    - ReloadSignal string () [USR1, ...] - Signal to send on reaload.

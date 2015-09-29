@@ -78,6 +78,10 @@ const (
 	optionUserServiceDefault   = false
 	optionSessionCreate        = "SessionCreate"
 	optionSessionCreateDefault = false
+	optionLogStderr            = "LogStderr"
+	optionLogStderrDefault     = false
+	optionLogStdout            = "LogStdout"
+	optionLogStdoutDefault     = false
 )
 
 // Config provides the setup for a Service. The Name field is required.
@@ -106,6 +110,8 @@ type Config struct {
 	//    - RunAtLoad     bool (false)
 	//    - UserService   bool (false) - Install as a current user service.
 	//    - SessionCreate bool (false) - Create a full user session.
+	//    - LogStderr			bool (false) - Log the processes stderr
+	//    - LogStdout			bool (false) - Log the processes stdout
 	Option KeyValue
 }
 

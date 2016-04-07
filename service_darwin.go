@@ -136,6 +136,7 @@ func (s *darwinLaunchdService) Install() error {
 		KeepAlive, RunAtLoad bool
 		SessionCreate        bool
 		LogStderr, LogStdout bool
+		Environment          map[string]string
 	}{
 		Config:        s.Config,
 		Path:          path,
@@ -144,6 +145,7 @@ func (s *darwinLaunchdService) Install() error {
 		SessionCreate: s.Option.bool(optionSessionCreate, optionSessionCreateDefault),
 		LogStderr:     s.Option.bool(optionLogStderr, optionLogStderrDefault),
 		LogStdout:     s.Option.bool(optionLogStdout, optionLogStdoutDefault),
+		Environment:   s.Option.stringMap(optionEnvironment, optionEnvironmentDefault),
 	}
 
 	functions := template.FuncMap{
@@ -245,6 +247,15 @@ var launchdConfig = `<?xml version='1.0' encoding='UTF-8'?>
 {{if .LogStdout}}
 <key>StandardOutPath</key>
 <string>/Library/Logs/{{html .Name}}.log</string>
+{{end}}
+{{if .Environment}}
+<key>EnvironmentVariables</key>
+<dict>
+{{range $key, $value := .Environment}}
+	<key>{{html $key}}</key>
+	<string>{{html $value}}</string>
+{{end}}
+</dict>
 {{end}}
 
 </dict>

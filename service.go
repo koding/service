@@ -85,6 +85,11 @@ const (
 	optionLogStderrDefault     = false
 	optionLogStdout            = "LogStdout"
 	optionLogStdoutDefault     = false
+	optionEnvironment          = "Environment"
+)
+
+var (
+	optionEnvironmentDefault map[string]string
 )
 
 // Config provides the setup for a Service. The Name field is required.
@@ -113,8 +118,9 @@ type Config struct {
 	//    - RunAtLoad     bool (false)
 	//    - UserService   bool (false) - Install as a current user service.
 	//    - SessionCreate bool (false) - Create a full user session.
-	//    - LogStderr			bool (false) - Log the processes stderr
-	//    - LogStdout			bool (false) - Log the processes stdout
+	//    - LogStderr     bool (false) - Log the processes stderr
+	//    - LogStdout     bool (false) - Log the processes stdout
+	//    - Environment   map[string]string - environment variables
 	//  * POSIX
 	//    - RunWait      func() (wait for SIGNAL) - Do not install signal but wait for this function to return.
 	//    - ReloadSignal string () [USR1, ...] - Signal to send on reaload.
@@ -159,10 +165,8 @@ type KeyValue map[string]interface{}
 // bool returns the value of the given name, assuming the value is a boolean.
 // If the value isn't found or is not of the type, the defaultValue is returned.
 func (kv KeyValue) bool(name string, defaultValue bool) bool {
-	if v, found := kv[name]; found {
-		if castValue, is := v.(bool); is {
-			return castValue
-		}
+	if castValue, ok := kv[name].(bool); ok {
+		return castValue
 	}
 	return defaultValue
 }
@@ -170,10 +174,8 @@ func (kv KeyValue) bool(name string, defaultValue bool) bool {
 // int returns the value of the given name, assuming the value is an int.
 // If the value isn't found or is not of the type, the defaultValue is returned.
 func (kv KeyValue) int(name string, defaultValue int) int {
-	if v, found := kv[name]; found {
-		if castValue, is := v.(int); is {
-			return castValue
-		}
+	if castValue, ok := kv[name].(int); ok {
+		return castValue
 	}
 	return defaultValue
 }
@@ -181,10 +183,8 @@ func (kv KeyValue) int(name string, defaultValue int) int {
 // string returns the value of the given name, assuming the value is a string.
 // If the value isn't found or is not of the type, the defaultValue is returned.
 func (kv KeyValue) string(name string, defaultValue string) string {
-	if v, found := kv[name]; found {
-		if castValue, is := v.(string); is {
-			return castValue
-		}
+	if castValue, ok := kv[name].(string); ok {
+		return castValue
 	}
 	return defaultValue
 }
@@ -192,10 +192,8 @@ func (kv KeyValue) string(name string, defaultValue string) string {
 // float64 returns the value of the given name, assuming the value is a float64.
 // If the value isn't found or is not of the type, the defaultValue is returned.
 func (kv KeyValue) float64(name string, defaultValue float64) float64 {
-	if v, found := kv[name]; found {
-		if castValue, is := v.(float64); is {
-			return castValue
-		}
+	if castValue, ok := kv[name].(float64); ok {
+		return castValue
 	}
 	return defaultValue
 }
@@ -203,10 +201,15 @@ func (kv KeyValue) float64(name string, defaultValue float64) float64 {
 // funcSingle returns the value of the given name, assuming the value is a float64.
 // If the value isn't found or is not of the type, the defaultValue is returned.
 func (kv KeyValue) funcSingle(name string, defaultValue func()) func() {
-	if v, found := kv[name]; found {
-		if castValue, is := v.(func()); is {
-			return castValue
-		}
+	if castValue, ok := kv[name].(func()); ok {
+		return castValue
+	}
+	return defaultValue
+}
+
+func (kv KeyValue) stringMap(name string, defaultValue map[string]string) map[string]string {
+	if castValue, ok := kv[name].(map[string]string); ok {
+		return castValue
 	}
 	return defaultValue
 }

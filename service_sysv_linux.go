@@ -72,10 +72,12 @@ func (s *sysv) Install() error {
 
 	var to = &struct {
 		*Config
-		Path string
+		Path          string
+		RequiredStart string
 	}{
 		s.Config,
 		path,
+		s.Config.Option.string(optionRequiredStart, ""),
 	}
 
 	err = s.template().Execute(f, to)
@@ -161,7 +163,7 @@ const sysvScript = `#!/bin/sh
 
 ### BEGIN INIT INFO
 # Provides:          {{.Path}}
-# Required-Start:
+# Required-Start:    {{.RequiredStart}}
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6

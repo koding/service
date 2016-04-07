@@ -86,6 +86,8 @@ const (
 	optionLogStdout            = "LogStdout"
 	optionLogStdoutDefault     = false
 	optionEnvironment          = "Environment"
+	optionRequiredStart        = "RequiredStart"
+	optionAfter                = "After"
 )
 
 var (
@@ -122,9 +124,11 @@ type Config struct {
 	//    - LogStdout     bool (false) - Log the processes stdout
 	//    - Environment   map[string]string - environment variables
 	//  * POSIX
-	//    - RunWait      func() (wait for SIGNAL) - Do not install signal but wait for this function to return.
-	//    - ReloadSignal string () [USR1, ...] - Signal to send on reaload.
-	//    - PIDFile     string () [/run/prog.pid] - Location of the PID file.
+	//    - RunWait       func() (wait for SIGNAL)  - Do not install signal but wait for this function to return.
+	//    - ReloadSignal  string () [USR1, ...]     - Signal to send on reaload.
+	//    - PIDFile       string () [/run/prog.pid] - Location of the PID file.
+	//    - RequiredStart string ()                 - Space-separated service dependencies (sysvinit, e.g. $network)
+	//    - After         string ()                 - Space-separated service dependencies (systemd, e.g. network.target)
 	Option KeyValue
 }
 

@@ -90,10 +90,12 @@ func (s *upstart) Install() error {
 
 	var to = &struct {
 		*Config
-		Path string
+		Path        string
+		Environment map[string]string
 	}{
-		s.Config,
-		path,
+		Config:      s.Config,
+		Path:        path,
+		Environment: s.Option.stringMap(optionEnvironment, optionEnvironmentDefault),
 	}
 
 	return s.template().Execute(f, to)
@@ -170,7 +172,7 @@ stop on runlevel [!2345]
 {{if .UserName}}setuid {{.UserName}}{{end}}
 
 {{range $key, $value := .Environment}}
-env {{$key}}=${{value}}
+env {{$key}}={{$value}}
 {{end}}
 
 #setuid username
@@ -185,5 +187,5 @@ end script
 
 script
     {{.Path}}{{range .Arguments}} {{.|cmd}} {{end}}
-end-script
+end script
 `

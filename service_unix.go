@@ -52,12 +52,13 @@ func (s sysLogger) Infof(format string, a ...interface{}) error {
 	return s.send(s.Writer.Info(fmt.Sprintf(format, a...)))
 }
 
+var opNotPermitted = []byte("Operation not permitted")
+
 func run(command string, arguments ...string) error {
 	cmd := exec.Command(command, arguments...)
 
 	// Connect pipe to read Stderr
 	stderr, err := cmd.StderrPipe()
-
 	if err != nil {
 		// Failed to connect pipe
 		return fmt.Errorf("%q failed to connect stderr pipe: %v", command, err)

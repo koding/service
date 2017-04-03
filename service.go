@@ -87,6 +87,7 @@ const (
 	optionEnvironment          = "Environment"
 	optionRequiredStart        = "RequiredStart"
 	optionAfter                = "After"
+	optionUser                 = "User"
 )
 
 var (

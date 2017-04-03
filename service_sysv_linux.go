@@ -74,10 +74,12 @@ func (s *sysv) Install() error {
 		*Config
 		Path          string
 		RequiredStart string
+		User          string
 	}{
 		s.Config,
 		path,
 		s.Config.Option.string(optionRequiredStart, ""),
+		s.Config.Option.string(optionUser, ""),
 	}
 
 	err = s.template().Execute(f, to)
@@ -196,7 +198,11 @@ case "$1" in
         else
             echo "Starting $name"
             {{if .WorkingDirectory}}cd '{{.WorkingDirectory}}'{{end}}
+            {{if .User}}
+            sudo -E -u {{.User}} $cmd >> "$stdout_log" 2>> "$stderr_log" &
+            {{else}}
             $cmd >> "$stdout_log" 2>> "$stderr_log" &
+            {{end}}
             echo $! > "$pid_file"
             if ! is_running; then
                 echo "Unable to start, see $stdout_log and $stderr_log"

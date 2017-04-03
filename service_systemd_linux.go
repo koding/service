@@ -84,6 +84,7 @@ func (s *systemd) Install() error {
 		PIDFile      string
 		After        string
 		LogFile      bool
+		User         string
 	}{
 		s.Config,
 		path,
@@ -91,6 +92,7 @@ func (s *systemd) Install() error {
 		s.Option.string(optionPIDFile, ""),
 		s.Option.string(optionAfter, ""),
 		s.Option.bool(optionLogFile, optionLogFileDefault),
+		s.Option.string(optionUser, ""),
 	}
 
 	err = s.template().Execute(f, to)
@@ -165,6 +167,9 @@ ConditionFileIsExecutable={{.Path|cmdEscape}}
 [Service]
 StartLimitInterval=5
 StartLimitBurst=10
+{{if .User}}
+User={{.User}}
+{{end}}
 {{if .LogFile}}
 ExecStart=/bin/sh -c '{{.Path|cmdEscape}}{{range .Arguments}} {{.|cmd}}{{end}} >> /var/log/{{.Config.Name}}.log 2>&1'
 {{else}}
